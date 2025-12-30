@@ -73,7 +73,6 @@ class BudgetController extends GetxController {
   bool isBudgetExceeded(BudgetModel budget) {
     return getSpentAmount(budget) > budget.limit;
   }
-
   bool isBudgetNearLimit(BudgetModel budget) {
     final progress = getBudgetProgress(budget);
     return progress >= 0.8 && progress < 1.0;

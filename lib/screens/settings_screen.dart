@@ -10,6 +10,7 @@ import '../controllers/transaction_controller.dart';
 import '../controllers/category_controller.dart';
 import '../models/transaction_model.dart';
 import '../utils/app_snackbar.dart';
+import '../utils/responsive_layout.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({Key? key}) : super(key: key);
@@ -21,12 +22,18 @@ class SettingsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Settings')),
       body: ListView(
+        padding: EdgeInsets.symmetric(
+          vertical: ResponsiveLayout.getResponsiveVerticalPadding(context),
+        ),
         children: [
-          // Appearance Section
+      
           _buildSectionHeader(context, 'Appearance'),
           Obx(
             () => SwitchListTile(
-              title: const Text('Dark Mode'),
+              title: Text(
+                'Dark Mode',
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
               subtitle: const Text('Switch between light and dark theme'),
               secondary: Icon(
                 settingsCtrl.isDarkMode.value
@@ -40,12 +47,14 @@ class SettingsScreen extends StatelessWidget {
 
           const Divider(),
 
-          // Currency Section
           _buildSectionHeader(context, 'Currency'),
           Obx(
             () => ListTile(
               leading: const Icon(Icons.attach_money),
-              title: const Text('Currency Symbol'),
+              title: Text(
+                'Currency Symbol',
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
               subtitle: Text('Current: ${settingsCtrl.currency.value}'),
               trailing: const Icon(Icons.chevron_right),
               onTap: () => _showCurrencyPicker(context),
@@ -54,7 +63,7 @@ class SettingsScreen extends StatelessWidget {
 
           const Divider(),
 
-          // Data Management Section
+        
           _buildSectionHeader(context, 'Data Management'),
           ListTile(
             leading: const Icon(Icons.file_download, color: Colors.blue),
@@ -63,13 +72,7 @@ class SettingsScreen extends StatelessWidget {
             trailing: const Icon(Icons.chevron_right),
             onTap: () => _exportToCSV(context),
           ),
-          ListTile(
-            leading: const Icon(Icons.backup, color: Colors.green),
-            title: const Text('Backup Data'),
-            subtitle: const Text('Save a backup of your data'),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () => _backupData(context),
-          ),
+
           ListTile(
             leading: const Icon(Icons.delete_forever, color: Colors.red),
             title: const Text('Wipe All Data'),
@@ -80,17 +83,16 @@ class SettingsScreen extends StatelessWidget {
 
           const Divider(),
 
-         
           _buildSectionHeader(context, 'About'),
-          ListTile(
-            leading: const Icon(Icons.info_outline),
-            title: const Text('Version'),
-            subtitle: const Text('1.0.0'),
+          const ListTile(
+            leading: Icon(Icons.info_outline),
+            title: Text('Version'),
+            subtitle: Text('1.0.0'),
           ),
-          ListTile(
-            leading: const Icon(Icons.code),
-            title: const Text('Developed by Shahria'),
-            subtitle: const Text('Built with Flutter & GetX'),
+          const ListTile(
+            leading: Icon(Icons.code),
+            title: Text('Developed by Shahria'),
+            subtitle: Text('Built with Flutter & GetX'),
           ),
         ],
       ),
@@ -161,7 +163,7 @@ class SettingsScreen extends StatelessWidget {
       final transactionCtrl = Get.find<TransactionController>();
       final categoryCtrl = Get.find<CategoryController>();
 
-      // Prepare CSV data
+   
       List<List<dynamic>> rows = [
         ['Date', 'Type', 'Category', 'Amount', 'Note'],
       ];
@@ -178,42 +180,18 @@ class SettingsScreen extends StatelessWidget {
       }
 
       String csv = const ListToCsvConverter().convert(rows);
-
-      // Save to file
       final directory = await getApplicationDocumentsDirectory();
       final path =
           '${directory.path}/transactions_${DateFormat('yyyyMMdd_HHmmss').format(DateTime.now())}.csv';
       final file = File(path);
       await file.writeAsString(csv);
 
-      // Share the file
+
       await Share.shareXFiles([XFile(path)], text: 'My Transactions');
 
       AppSnackBar.showSuccess('Transactions exported successfully');
     } catch (e) {
       AppSnackBar.showError('Failed to export: $e');
-    }
-  }
-
-  Future<void> _backupData(BuildContext context) async {
-    try {
-      Get.dialog(
-        const Center(child: CircularProgressIndicator()),
-        barrierDismissible: false,
-      );
-
-      // Wait a moment to show loading
-      await Future.delayed(const Duration(seconds: 1));
-
-      // In a real app, you would copy the Hive boxes to a backup location
-      // For now, we'll show a success message
-
-      Get.back(); // Close loading dialog
-
-      AppSnackBar.showSuccess('Data backed up successfully');
-    } catch (e) {
-      Get.back(); // Close loading dialog
-      AppSnackBar.showError('Failed to backup: $e');
     }
   }
 

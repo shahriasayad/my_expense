@@ -6,6 +6,7 @@ import '../controllers/transaction_controller.dart';
 import '../controllers/category_controller.dart';
 import '../controllers/settings_controller.dart';
 import '../models/transaction_model.dart';
+import '../utils/responsive_layout.dart';
 
 class AnalyticsScreen extends StatefulWidget {
   const AnalyticsScreen({super.key});
@@ -56,22 +57,50 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
     final settingsCtrl = Get.find<SettingsController>();
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(
+        ResponsiveLayout.getResponsiveHorizontalPadding(context),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Period Selector
-          Row(
-            children: [
-              Expanded(child: _buildPeriodButton('Week', 'week')),
-              const SizedBox(width: 8),
-              Expanded(child: _buildPeriodButton('Month', 'month')),
-              const SizedBox(width: 8),
-              Expanded(child: _buildPeriodButton('Year', 'year')),
-            ],
-          ),
+          // Period Selector - Responsive
+          ResponsiveLayout.isMobile(context)
+              ? Column(
+                  children: [
+                    SizedBox(
+                      width: double.infinity,
+                      child: _buildPeriodButton('Week', 'week'),
+                    ),
+                    SizedBox(
+                      height: ResponsiveLayout.getResponsiveGap(context),
+                    ),
+                    SizedBox(
+                      width: double.infinity,
+                      child: _buildPeriodButton('Month', 'month'),
+                    ),
+                    SizedBox(
+                      height: ResponsiveLayout.getResponsiveGap(context),
+                    ),
+                    SizedBox(
+                      width: double.infinity,
+                      child: _buildPeriodButton('Year', 'year'),
+                    ),
+                  ],
+                )
+              : Row(
+                  children: [
+                    Expanded(child: _buildPeriodButton('Week', 'week')),
+                    SizedBox(width: ResponsiveLayout.getResponsiveGap(context)),
+                    Expanded(child: _buildPeriodButton('Month', 'month')),
+                    SizedBox(width: ResponsiveLayout.getResponsiveGap(context)),
+                    Expanded(child: _buildPeriodButton('Year', 'year')),
+                  ],
+                ),
 
-          const SizedBox(height: 24),
+          SizedBox(
+            height:
+                ResponsiveLayout.getResponsiveVerticalPadding(context) * 1.5,
+          ),
 
           // Summary Cards
           Obx(() {
@@ -83,44 +112,88 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
                 .where((t) => t.type == TransactionType.expense)
                 .fold(0.0, (sum, t) => sum + t.amount);
 
-            return Row(
-              children: [
-                Expanded(
-                  child: _buildStatCard(
-                    'Income',
-                    '${settingsCtrl.currency.value}${income.toStringAsFixed(2)}',
-                    Icons.arrow_downward,
-                    Colors.green,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: _buildStatCard(
-                    'Expense',
-                    '${settingsCtrl.currency.value}${expense.toStringAsFixed(2)}',
-                    Icons.arrow_upward,
-                    Colors.red,
-                  ),
-                ),
-              ],
-            );
+            return ResponsiveLayout.isMobile(context)
+                ? Column(
+                    children: [
+                      _buildStatCard(
+                        'Income',
+                        '${settingsCtrl.currency.value}${income.toStringAsFixed(2)}',
+                        Icons.arrow_downward,
+                        Colors.green,
+                      ),
+                      SizedBox(
+                        height: ResponsiveLayout.getResponsiveGap(context),
+                      ),
+                      _buildStatCard(
+                        'Expense',
+                        '${settingsCtrl.currency.value}${expense.toStringAsFixed(2)}',
+                        Icons.arrow_upward,
+                        Colors.red,
+                      ),
+                    ],
+                  )
+                : Row(
+                    children: [
+                      Expanded(
+                        child: _buildStatCard(
+                          'Income',
+                          '${settingsCtrl.currency.value}${income.toStringAsFixed(2)}',
+                          Icons.arrow_downward,
+                          Colors.green,
+                        ),
+                      ),
+                      SizedBox(
+                        width: ResponsiveLayout.getResponsiveGap(context),
+                      ),
+                      Expanded(
+                        child: _buildStatCard(
+                          'Expense',
+                          '${settingsCtrl.currency.value}${expense.toStringAsFixed(2)}',
+                          Icons.arrow_upward,
+                          Colors.red,
+                        ),
+                      ),
+                    ],
+                  );
           }),
 
-          const SizedBox(height: 24),
+          SizedBox(
+            height:
+                ResponsiveLayout.getResponsiveVerticalPadding(context) * 1.5,
+          ),
 
           // Bar Chart
-          Text('Spending Trend', style: Theme.of(context).textTheme.titleLarge),
-          const SizedBox(height: 16),
-          Obx(() => _buildBarChart()),
+          Text(
+            'Spending Trend',
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              fontSize: ResponsiveLayout.getResponsiveFontSize(
+                context,
+                mobileSize: 16,
+                tabletSize: 18,
+                desktopSize: 20,
+              ),
+            ),
+          ),
+          SizedBox(height: ResponsiveLayout.getResponsiveGap(context)),
+          Obx(() => _buildBarChart(context)),
 
-          const SizedBox(height: 24),
+          SizedBox(
+            height:
+                ResponsiveLayout.getResponsiveVerticalPadding(context) * 1.5,
+          ),
 
-          // Transaction List
           Text(
             'Recent Transactions',
-            style: Theme.of(context).textTheme.titleLarge,
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              fontSize: ResponsiveLayout.getResponsiveFontSize(
+                context,
+                mobileSize: 16,
+                tabletSize: 18,
+                desktopSize: 20,
+              ),
+            ),
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: ResponsiveLayout.getResponsiveGap(context)),
           Obx(() {
             final transactions = _getFilteredTransactions().take(5).toList();
             return _buildTransactionList(transactions);
@@ -136,16 +209,25 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
     final settingsCtrl = Get.find<SettingsController>();
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(
+        ResponsiveLayout.getResponsiveHorizontalPadding(context),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Pie Chart
           Text(
             'Expense by Category',
-            style: Theme.of(context).textTheme.titleLarge,
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              fontSize: ResponsiveLayout.getResponsiveFontSize(
+                context,
+                mobileSize: 16,
+                tabletSize: 18,
+                desktopSize: 20,
+              ),
+            ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: ResponsiveLayout.getResponsiveGap(context)),
           Obx(() {
             final categoryExpenses = transactionCtrl.getCategoryExpenses();
 
@@ -159,7 +241,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
             }
 
             return SizedBox(
-              height: 250,
+              height: ResponsiveLayout.getChartHeight(context),
               child: PieChart(
                 PieChartData(
                   sections: categoryExpenses.entries.map((entry) {
@@ -178,30 +260,47 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
                       value: entry.value,
                       title: '${percentage.toStringAsFixed(1)}%',
                       color: color,
-                      radius: 100,
-                      titleStyle: const TextStyle(
-                        fontSize: 14,
+                      radius: ResponsiveLayout.isMobile(context) ? 80 : 100,
+                      titleStyle: TextStyle(
+                        fontSize: ResponsiveLayout.getResponsiveFontSize(
+                          context,
+                          mobileSize: 12,
+                          tabletSize: 14,
+                          desktopSize: 16,
+                        ),
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
                     );
                   }).toList(),
                   sectionsSpace: 2,
-                  centerSpaceRadius: 40,
+                  centerSpaceRadius: ResponsiveLayout.isMobile(context)
+                      ? 30
+                      : 40,
                   pieTouchData: PieTouchData(enabled: true),
                 ),
               ),
             );
           }),
 
-          const SizedBox(height: 24),
+          SizedBox(
+            height:
+                ResponsiveLayout.getResponsiveVerticalPadding(context) * 1.5,
+          ),
 
           // Category List
           Text(
             'Category Breakdown',
-            style: Theme.of(context).textTheme.titleLarge,
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              fontSize: ResponsiveLayout.getResponsiveFontSize(
+                context,
+                mobileSize: 16,
+                tabletSize: 18,
+                desktopSize: 20,
+              ),
+            ),
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: ResponsiveLayout.getResponsiveGap(context)),
           Obx(() {
             final categoryExpenses = transactionCtrl.getCategoryExpenses();
             final sortedEntries = categoryExpenses.entries.toList()
@@ -227,9 +326,13 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
                     : Colors.grey;
 
                 return Card(
-                  margin: const EdgeInsets.only(bottom: 8),
+                  margin: EdgeInsets.only(
+                    bottom: ResponsiveLayout.getResponsiveGap(context),
+                  ),
                   child: Padding(
-                    padding: const EdgeInsets.all(16),
+                    padding: EdgeInsets.all(
+                      ResponsiveLayout.getResponsiveHorizontalPadding(context),
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -387,12 +490,12 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
     );
   }
 
-  Widget _buildBarChart() {
+  Widget _buildBarChart(BuildContext context) {
     final transactions = _getFilteredTransactions();
 
     if (transactions.isEmpty) {
       return Container(
-        height: 200,
+        height: ResponsiveLayout.getChartHeight(context),
         decoration: BoxDecoration(
           color: Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(16),
@@ -416,8 +519,10 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
         : sortedKeys;
 
     return Container(
-      height: 200,
-      padding: const EdgeInsets.all(16),
+      height: ResponsiveLayout.getChartHeight(context),
+      padding: EdgeInsets.all(
+        ResponsiveLayout.getResponsiveHorizontalPadding(context),
+      ),
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(16),
@@ -437,7 +542,14 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
                       value.toInt() < displayKeys.length) {
                     return Text(
                       displayKeys[value.toInt()].split('/')[1],
-                      style: const TextStyle(fontSize: 10),
+                      style: TextStyle(
+                        fontSize: ResponsiveLayout.getResponsiveFontSize(
+                          context,
+                          mobileSize: 10,
+                          tabletSize: 12,
+                          desktopSize: 14,
+                        ),
+                      ),
                     );
                   }
                   return const Text('');

@@ -10,8 +10,7 @@ class AddCategoryScreen extends StatefulWidget {
   final int? index;
   final TransactionType? type;
 
-  const AddCategoryScreen({Key? key, this.category, this.index, this.type})
-    : super(key: key);
+  const AddCategoryScreen({super.key, this.category, this.index, this.type});
 
   @override
   State<AddCategoryScreen> createState() => _AddCategoryScreenState();

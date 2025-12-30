@@ -34,7 +34,6 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       body: IndexedStack(index: _currentIndex, children: _screens),
       floatingActionButton: null,
-
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       bottomNavigationBar: NavigationBar(
         selectedIndex: _currentIndex,
@@ -291,14 +290,14 @@ class DashboardTab extends StatelessWidget {
         children: [
           const Text(
             'Total Balance',
-            style: TextStyle(color: Colors.white70, fontSize: 16),
+            style: TextStyle(color: Colors.white70, fontSize: 14),
           ),
           const SizedBox(height: 8),
           Text(
             '${settings.currency.value}${ctrl.totalBalance.toStringAsFixed(2)}',
             style: const TextStyle(
               color: Colors.white,
-              fontSize: 36,
+              fontSize: 32,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -392,20 +391,18 @@ class DashboardTab extends StatelessWidget {
                 child: Icon(icon, color: color, size: 20),
               ),
               const SizedBox(width: 8),
-              Text(
-                title,
-                style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
+              Expanded(
+                child: Text(
+                  title,
+                  style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                ),
               ),
             ],
           ),
           const SizedBox(height: 12),
           Text(
             '$currency${amount.toStringAsFixed(2)}',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).textTheme.displayLarge?.color,
-            ),
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
         ],
       ),
@@ -608,7 +605,7 @@ class TransactionSearchSheet extends StatelessWidget {
             ),
           ),
 
-          // Results
+         
           Expanded(
             child: Obx(() {
               final transactions = transactionCtrl.filteredTransactions;

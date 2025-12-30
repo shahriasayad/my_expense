@@ -1,15 +1,7 @@
-// GENERATED CODE - DO NOT MODIFY BY HAND
-
 part of 'budget_model.dart';
-
-// **************************************************************************
-// TypeAdapterGenerator
-// **************************************************************************
-
 class BudgetModelAdapter extends TypeAdapter<BudgetModel> {
   @override
   final int typeId = 3;
-
   @override
   BudgetModel read(BinaryReader reader) {
     final numOfFields = reader.readByte();
@@ -25,7 +17,6 @@ class BudgetModelAdapter extends TypeAdapter<BudgetModel> {
       isActive: fields[5] as bool? ?? true,
     );
   }
-
   @override
   void write(BinaryWriter writer, BudgetModel obj) {
     writer

@@ -8,14 +8,14 @@ import '../controllers/settings_controller.dart';
 import '../models/transaction_model.dart';
 import '../models/category_model.dart';
 import '../utils/app_snackbar.dart';
+import '../utils/responsive_layout.dart';
 import 'add_category_screen.dart';
 
 class AddTransactionScreen extends StatefulWidget {
   final TransactionModel? transaction;
   final int? index;
 
-  const AddTransactionScreen({Key? key, this.transaction, this.index})
-    : super(key: key);
+  const AddTransactionScreen({super.key, this.transaction, this.index});
 
   @override
   State<AddTransactionScreen> createState() => _AddTransactionScreenState();
@@ -91,7 +91,9 @@ class _AddTransactionScreenState extends State<AddTransactionScreen>
         child: SlideTransition(
           position: _slideAnimation,
           child: SingleChildScrollView(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(
+              ResponsiveLayout.getResponsiveHorizontalPadding(context),
+            ),
             child: Form(
               key: _formKey,
               child: Column(
@@ -359,7 +361,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen>
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(category.icon, style: const TextStyle(fontSize: 20)),
+            Text(category.icon, style: const TextStyle(fontSize: 18)),
             const SizedBox(width: 8),
             Text(
               category.name,

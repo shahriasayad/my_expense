@@ -103,13 +103,11 @@ class TransactionController extends GetxController {
         .where((t) => t.type == TransactionType.income)
         .fold(0.0, (sum, t) => sum + t.amount);
   }
-
   double get totalExpense {
     return transactions
         .where((t) => t.type == TransactionType.expense)
         .fold(0.0, (sum, t) => sum + t.amount);
   }
-
   double getTodayExpense() {
     final today = DateTime.now();
     return transactions
@@ -122,7 +120,6 @@ class TransactionController extends GetxController {
         )
         .fold(0.0, (sum, t) => sum + t.amount);
   }
-
   double getWeekExpense() {
     final now = DateTime.now();
     final weekStart = now.subtract(Duration(days: now.weekday - 1));
@@ -146,22 +143,17 @@ class TransactionController extends GetxController {
         )
         .fold(0.0, (sum, t) => sum + t.amount);
   }
-
   Map<String, double> getCategoryExpenses() {
     final Map<String, double> categoryMap = {};
-
     for (var t in transactions) {
       if (t.type == TransactionType.expense) {
         categoryMap[t.categoryId] = (categoryMap[t.categoryId] ?? 0) + t.amount;
       }
     }
-
     return categoryMap;
   }
-
   List<TransactionModel> getTransactionsByPeriod(String period) {
     final now = DateTime.now();
-
     switch (period) {
       case 'today':
         return transactions
@@ -172,7 +164,6 @@ class TransactionController extends GetxController {
                   t.date.day == now.day,
             )
             .toList();
-
       case 'week':
         final weekStart = now.subtract(Duration(days: now.weekday - 1));
         return transactions.where((t) => t.date.isAfter(weekStart)).toList();
@@ -181,12 +172,10 @@ class TransactionController extends GetxController {
         return transactions
             .where((t) => t.date.year == now.year && t.date.month == now.month)
             .toList();
-
       default:
         return transactions;
     }
   }
-
   void clearFilters() {
     searchQuery.value = '';
     selectedCategory.value = '';

@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import '../controllers/category_controller.dart';
 import '../models/transaction_model.dart';
 import '../utils/app_snackbar.dart';
+import '../utils/responsive_layout.dart';
 import 'add_category_screen.dart';
 
 class CategoriesScreen extends StatelessWidget {
@@ -25,8 +26,8 @@ class CategoriesScreen extends StatelessWidget {
         ),
         body: TabBarView(
           children: [
-            _buildCategoryList(TransactionType.expense),
-            _buildCategoryList(TransactionType.income),
+            _buildCategoryList(context, TransactionType.expense),
+            _buildCategoryList(context, TransactionType.income),
           ],
         ),
         floatingActionButton: FloatingActionButton.extended(
@@ -38,7 +39,7 @@ class CategoriesScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildCategoryList(TransactionType type) {
+  Widget _buildCategoryList(BuildContext context, TransactionType type) {
     final categoryCtrl = Get.find<CategoryController>();
 
     return Obx(() {
@@ -67,7 +68,9 @@ class CategoriesScreen extends StatelessWidget {
       }
 
       return ListView.builder(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(
+          ResponsiveLayout.getResponsiveHorizontalPadding(context),
+        ),
         itemCount: categories.length,
         itemBuilder: (context, index) {
           final category = categories[index];
@@ -77,7 +80,9 @@ class CategoriesScreen extends StatelessWidget {
           final realIndex = categoryCtrl.categories.indexOf(category);
 
           return Card(
-            margin: const EdgeInsets.only(bottom: 12),
+            margin: EdgeInsets.only(
+              bottom: ResponsiveLayout.getResponsiveGap(context),
+            ),
             child: ListTile(
               leading: Container(
                 width: 56,
@@ -95,8 +100,13 @@ class CategoriesScreen extends StatelessWidget {
               ),
               title: Text(
                 category.name,
-                style: const TextStyle(
-                  fontSize: 16,
+                style: TextStyle(
+                  fontSize: ResponsiveLayout.getResponsiveFontSize(
+                    context,
+                    mobileSize: 14,
+                    tabletSize: 16,
+                    desktopSize: 18,
+                  ),
                   fontWeight: FontWeight.w600,
                 ),
               ),
