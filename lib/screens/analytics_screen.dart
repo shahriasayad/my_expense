@@ -64,38 +64,15 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Period Selector - Responsive
-          ResponsiveLayout.isMobile(context)
-              ? Column(
-                  children: [
-                    SizedBox(
-                      width: double.infinity,
-                      child: _buildPeriodButton('Week', 'week'),
-                    ),
-                    SizedBox(
-                      height: ResponsiveLayout.getResponsiveGap(context),
-                    ),
-                    SizedBox(
-                      width: double.infinity,
-                      child: _buildPeriodButton('Month', 'month'),
-                    ),
-                    SizedBox(
-                      height: ResponsiveLayout.getResponsiveGap(context),
-                    ),
-                    SizedBox(
-                      width: double.infinity,
-                      child: _buildPeriodButton('Year', 'year'),
-                    ),
-                  ],
-                )
-              : Row(
-                  children: [
-                    Expanded(child: _buildPeriodButton('Week', 'week')),
-                    SizedBox(width: ResponsiveLayout.getResponsiveGap(context)),
-                    Expanded(child: _buildPeriodButton('Month', 'month')),
-                    SizedBox(width: ResponsiveLayout.getResponsiveGap(context)),
-                    Expanded(child: _buildPeriodButton('Year', 'year')),
-                  ],
-                ),
+          Row(
+            children: [
+              Expanded(child: _buildPeriodButton('Week', 'week')),
+              SizedBox(width: ResponsiveLayout.getResponsiveGap(context)),
+              Expanded(child: _buildPeriodButton('Month', 'month')),
+              SizedBox(width: ResponsiveLayout.getResponsiveGap(context)),
+              Expanded(child: _buildPeriodButton('Year', 'year')),
+            ],
+          ),
 
           SizedBox(
             height:
